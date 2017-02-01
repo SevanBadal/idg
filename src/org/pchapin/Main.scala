@@ -100,8 +100,8 @@ object Main {
 
             // Compute the parallax shift (assumes a circular shift)
             val yearAngle = 2.0 * Math.PI * dayNumber.toDouble / 365.0  // In radians
-            val adjustedLongitude = eclipticLongitude + Math.cos(yearAngle)
-            val adjustedLatitude = eclipticLatitude + Math.sin(yearAngle)
+            val adjustedLongitude = eclipticLongitude + parallaxDeviation * Math.cos(yearAngle)
+            val adjustedLatitude = eclipticLatitude + parallaxDeviation * Math.sin(yearAngle)
 
             val formattedLongitude = "%+014.9f".format(adjustedLongitude)
             val formattedLatitude = "%+013.9f".format(adjustedLatitude)
