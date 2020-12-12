@@ -2,10 +2,16 @@ package org.pchapin
 
 import java.io._
 import scala.util.Random
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import java.io.PrintWriter;
 
 object Main {
 
   val randomGenerator = new Random(0)
+  val conf = new Configuration()
+  val fs= FileSystem.get(conf)
 
   /**
     * Compute a random three dimensional position inside a sphere with the given radius. This
@@ -51,7 +57,8 @@ object Main {
     }
 
     // Output the stellar data for reference.
-    val starWriter = new PrintWriter(new File(outputName))
+    val output = fs.create(new Path(outputName))
+    val starWriter = new PrintWriter(output)
     for (i <- stars.indices) {
       val Star((x, y, z)) = stars(i)
       val coordinatePicture = "%+010.5f"
@@ -77,10 +84,11 @@ object Main {
       else {
         val radiansToDegrees = 360.0 / (2.0 * Math.PI)
         val earthSunBaseline = 1.496e8 / (2.998e5 * 86400.0 * 365.25)  // In light years.
-        val stars = generateStars(args(0).toInt, 1000.0, "stars.txt")
+        val stars = generateStars(args(0).toInt, 1000.0, "idg/stars.txt")
 
         // Generate the imaginary data.
-        val observationWriter = new PrintWriter(new File("observations.txt"))
+        val output = fs.create(new Path("idg/observations.txt"))
+        val observationWriter = new PrintWriter(output)
         println("Generating observations for day...")
         for (dayNumber <- 1 to 365) {
           print(s"\r$dayNumber")
